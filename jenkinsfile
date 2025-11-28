@@ -2,12 +2,7 @@ pipeline {
   agent any
 
   stages {
-    stage('Clone') {
-      steps {
-        git 'https://github.com/Pramod581/Jarvis-Desktop-Voice-Assistant.git'
-      }
-    }
-
+    
     stage('Install Dependencies') {
       steps {
         sh 'pip3 install -r requirements.txt'
