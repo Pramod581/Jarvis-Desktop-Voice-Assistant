@@ -1,101 +1,198 @@
-# Jarvis Desktop Voice Assistant🔥
+# Jarvis Desktop Voice Assistant Deployment on AWS EC2 using Terraform & Jenkins
 
 <img src="https://giffiles.alphacoders.com/212/212508.gif" alt="">
 
-**Have you ever wondered how cool it would be to have your own assistant? Imagine how easier it would be doing Wikipedia searches without opening web browsers, and performing many other daily tasks like playing music with the help of a single voice command, opening different browsers in just a voice command.**
+# Project Overview
 
-**This project is simple desktop voice assistant built with python named as “Jarvis Desktop Voice Assistant”. This project is fully completed and error free. It was compiled in VS Code Editor.**
+**This project demonstrates how to deploy the Jarvis Desktop Voice Assistant application on an AWS EC2 instance using Terraform for infrastructure automation and Jenkins for CI/CD automation. The complete pipeline ensures that any code change pushed to GitHub is automatically deployed to the EC2 instance.**
 
-**🔸 Let's be honest, it's not as intelligent as in the movie, but it can do a lot of cool things and automate your daily tasks you do on your personal computers/laptops.**
-
-## 📌Built with
-
-<code><img height="30" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/python/python.png"></code>
-
-## 📌Features
-
-It can do a lot of cool things, some of them being:
-
-- Greet user
-- Tell current time and date
-- Launch applications/softwares
-- Open any website
-- Tells about any person (via Wikipedia)
-- Can search anything on Google
-- Plays music
-- Take important note in text file
-- Can take screenshot and save it with custom filename
-- Can tell jokes
+**Since Jarvis is a GUI-based desktop application and EC2 instances run in headless mode, the application is executed in server mode for deployment demonstration purposes.**
 
 ## Requirements
 
-Python 3.6+
+1. AWS EC2 
 
-## 📌Installation
+2. Terraform (Infrastructure as Code)
 
-1. **Fork The Repository**
-   - Click the "Fork" button on the top right corner of the repository page.
+3. Jenkins (Pipeline for Automation)
 
-2. **Clone The Repository**
-   - Clone the forked repository to your local machine:
-     ```bash
-     git clone <URL>
-     cd Jarvis-Desktop-Voice-Assistant
-     ```
+4. GitHub (To configure Webhooks)
 
-3.  **Create and Activate a Virtual Environment**
-     - Create a virtual environment:
-     ```bash
-     python -m venv .venv
-     ```
-   - Activate the virtual environment:
-     - For Windows:
-       ```bash
-       .venv\Scripts\activate
-       ```
-     - For macOS/Linux:
-       ```bash
-       source .venv/bin/activate
-       ```
-   - This activates the virtual environment and should look like `(venv) directory/of/your/project>`
+5. Systemd (Linux Service Manager)
 
-4. **Install Requirements**
+6. Python 3
 
-   - Install all the requirements given in **[requirements.txt](https://github.com/kishanrajput23/Jarvis-Desktop-Voice-Assistant/blob/main/requirements.txt)** by running the command `pip install -r requirements.txt`
+7. Ubuntu Linux
 
-5. **Install PyAudio**  
-   - Follow the instructions given **[here](https://stackoverflow.com/questions/52283840/i-cant-install-pyaudio-on-windows-how-to-solve-error-microsoft-visual-c-14)**
 
-6. **Run the Assistant**
-  - Run the main script:
-    ```bash
-    python jarvis.py
-    ```
-  - Now Enjoy with your own assistant !!!!
+## Project Architecture
 
-7. **Deactivate the Virtual Environment**
-   - After you're done, deactivate the virtual environment:
-     ```bash
-     deactivate
-     ```
+Terraform creates EC2 , security group 
+      │
+      ▼
+GitHub Repository  (WEBHOOK)
+      │
+      ▼
+Jenkins Pipeline  
+      │
+      ▼
+Jenkins deploys application  
+      │
+      ▼
+Systemd manages Jarvis service
 
-## 📌Contributing
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+## 📌Features
 
-## 📌Author
+- Automatic EC2 provisioning using Terraform
 
-👤 **Kishan Kumar Rai**
+- Security Group creation via Terraform
 
-- Twitter: [@kishan_rajput23](https://twitter.com/kishan_rajput23)
-- Github: [@kishanrajput23](https://github.com/kishanrajput23)
-- LinkedIn: [@kishan-kumar-rai](https://linkedin.com/in/kishan-kumar-rai-23112000)
+- Automated CI/CD using Jenkins webhook
 
-## 📌Show your support
+- SSH-based deployment from Jenkins to EC2
 
-Please ⭐️ this repository if this project helped you!
+- Application dependencies installation 
 
-## 📌License
+- Restart the systemd service
 
-This project is [MIT](https://choosealicense.com/licenses/mit/) licensed.
-Done
+- Verify that the application is running successfully
+
+## Project Structure
+
+|-- pycache
+|-- terraform files--main.tf
+                     provider.tf
+                     userdata.tpl
+|-- jenkinsfile
+|-- Jarvis
+|-- README
+|-- requirements
+
+## Terraform Setup including installation on Windows
+
+1. **Initialize Terraform**
+   - terraform init
+
+2. **Plan Infrastructure**
+   - terraform plan
+
+3. **Apply Infrastructure**
+   - terraform apply
+
+
+## Jenkins Installation on EC2
+
+- sudo apt update
+- sudo apt install openjdk-17-jre -y (JAVA)
+- sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc]" \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+- sudo apt update
+- sudo apt install jenkins
+
+## Take access of jenkins server 
+   **Open browser:**
+
+- http:public ip:8080
+
+   **Get password:**
+
+- sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+
+1. **Installed jenkins plugins**
+   - Git (SCM)
+   - SSH-Agent
+   - GitHub integretor
+   - Pipeline
+
+
+2. **Create a jenkins pipeline**
+
+- Open Jenkins Dashboard
+
+- Click New Item
+
+- Enter job name
+
+- Choose Pipeline
+
+- Click OK
+
+3. **Connect Jenkins to GitHub Repository**
+
+ a. *In pipeline configuration:*
+ - Select: Pipeline script from SCM
+
+ - SCM: Git
+
+ - Repository URL: 
+    'https://github.com/Pramod581/Jarvis-Desktop-Voice-Assistant.git'
+
+ - Branch: main
+
+ - Script Path: jenkinsfile
+
+ 4. **Create Deployment Pipeline (Jenkinsfile)**
+
+ - Pull latest GitHub code
+
+ - SSH into EC2
+
+ - Run: - git pull
+        - pip3 install -r requirements.txt
+        - sudo systemctl restart jarvis
+
+ 5. **Configure GitHub Webhook**
+
+ - http://<JENKINS_PUBLIC_IP>:8080/github-webhook/
+
+ 6. **Systemd Service File**
+
+ - /etc/systemd/system/jarvis.service
+ - sudo systemctl daemon-reload
+ - sudo systemctl start jarvis
+ - sudo systemctl enable jarvis
+
+
+ 7. **Test Deployment**
+
+ - Make a change in GitHub
+
+ - Commit & push
+
+ - Verify Jenkins build starts automatically
+
+ - Confirm:
+
+ - Code pulled
+
+ - Dependencies installed
+
+ - Service restarted
+
+ - Build success
+
+ 8. **Verification Commands**
+ 
+ -  systemctl status jarvis
+
+**Jenkins CI/CD pipeline was configured using GitHub webhook integration. The pipeline automatically triggers on code push, connects to EC2 through SSH, updates the application, installs dependencies, and restarts the service using systemd.**
+
+## Conclusion
+
+**This project showcases an end-to-end DevOps workflow combining Infrastructure as Code and CI/CD best practices. It highlights how Jenkins and Terraform can be effectively used together to automate cloud deployment.**
+
+## Author: 
+- Pramod Mali
+  
+    - Github: https://github.com/Pramod581
+    - Email: pramodnmali951@gmail.com
+    - Linkedin: https://www.linkedin.com/in/pramod-mali-0a5650273
+
+
+
+
