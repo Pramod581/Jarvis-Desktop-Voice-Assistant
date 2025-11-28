@@ -1,0 +1,18 @@
+pipeline {
+  agent any
+
+  stages {
+    
+    stage('Install Dependencies') {
+      steps {
+        sh 'pip3 install -r requirements.txt'
+      }
+    }
+
+    stage('Restart Service') {
+      steps {
+        sh 'sudo systemctl restart jarvis'
+      }
+    }
+  }
+}
